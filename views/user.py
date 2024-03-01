@@ -55,7 +55,8 @@ def create_user(user):
 
         db_cursor.execute(
             """
-            Insert into Users (first_name, last_name, username, email, password, bio, created_on, active) values (?, ?, ?, ?, ?, ?, ?, 1)
+            INSERT INTO Users (first_name, last_name, username, email, password, bio, created_on, profile_image_url, active) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 user["first_name"],
@@ -65,6 +66,8 @@ def create_user(user):
                 user["password"],
                 user["bio"],
                 datetime.now(),
+                user.get("profile_image_url", ""),
+                user.get("active", 1),
             ),
         )
 

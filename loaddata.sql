@@ -106,3 +106,13 @@ SELECT * FROM PostReactions;
 SELECT * FROM Tags;
 SELECT * FROM PostTags;
 SELECT * FROM Categories;
+
+--? TEST DATA ?--
+INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
+VALUES ('John', 'Doe', 'john.doe@example.com', 'Software Developer', 'johndoe', 'password123', 'https://example.com/johndoe.jpg', '2023-04-01', 1);
+
+INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
+VALUES ('Jane', 'Doe', 'jane.doe@example.com', 'Data Scientist', 'janedoe', 'password456', 'https://example.com/janedoe.jpg', '2023-04-02', 1);
+
+INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
+VALUES ('Alice', 'Smith', 'alice.smith@example.com', 'Product Manager', 'alicesmith', 'password789', 'https://example.com/alicesmith.jpg', '2023-04-03', 1);
