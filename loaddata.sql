@@ -103,14 +103,4 @@ SELECT *
 FROM PostTags;
 SELECT *
 FROM Categories;
-INSERT INTO `Posts`
-VALUES(
-    1,
-    1,
-    1,
-    'test 1',
-    '2024-02-28',
-    'image url',
-    'test 1',
-    'test 1'
-  )
+INSERT INTO `Posts VALUES( 1,  1,  1,'test 1', '2024-02-28','image url','test 1', 'test 1' )
