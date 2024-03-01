@@ -93,29 +93,26 @@ def retrieve_categories(pk, expand=False):
         query_results = db_cursor.fetchone()
 
         if not query_results:
-            return None  # Return None if ship is not found
+            return None  # Return None if category is not found
 
         # Convert the sqlite3.Row object to a dictionary
         query_results_dict = dict(query_results)
 
-        # Build the ship dictionary
-        category_id = query_results_dict.get("categoryId")
-        category_label = query_results_dict.get("categoryLabel")
-        
         category = {
             "id": query_results_dict["id"],
             "label": query_results_dict["label"],
-            "category_id": query_results_dict["category_id"],
-            "category": (
-                {
-                    "id": category_id,
-                    "label": category_label
-                }
-                if all(val is not None for val in [category_id, category_label])
-                and expand
-                else None
-            ),
         }
+
+        if expand:
+            category["category_id"] = query_results_dict.get("category_id")
+            category["category"] = (
+                {
+                    "id": query_results_dict.get("category_id"),
+                    "label": query_results_dict.get("category_label"),
+                }
+                if expand
+                else None
+            )
         # Serialize Python list to JSON encoded string
 
         serialized_category = json.dumps(category)
