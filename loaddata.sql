@@ -1,3 +1,4 @@
+--* TABLE CREATION *--
 CREATE TABLE "Users" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "first_name" varchar,
@@ -39,7 +40,7 @@ CREATE TABLE "Posts" (
   "image_url" varchar,
   "content" varchar,
   "approved" bit,
-  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`),
+  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
 );
 
 CREATE TABLE "Comments" (
@@ -85,6 +86,19 @@ CREATE TABLE "Categories" (
   "label" varchar
 );
 
+--* TABLE POPULATION *--
 INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
+
+--* DISPLAY ALL *--
+SELECT * FROM Users;
+SELECT * FROM DemotionQueue;
+SELECT * FROM Subscriptions;
+SELECT * FROM Posts;
+SELECT * FROM Comments;
+SELECT * FROM Reactions;
+SELECT * FROM PostReactions;
+SELECT * FROM Tags;
+SELECT * FROM PostTags;
+SELECT * FROM Categories;
