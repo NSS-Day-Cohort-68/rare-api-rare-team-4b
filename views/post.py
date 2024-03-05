@@ -26,8 +26,8 @@ def get_all_posts():
         for row in query_results:
             post = {
                 "id": row['id'],
-                "userId": row['userId'],
-                "categoryId": row['categoryId'],
+                "user_id": row['user_id'],
+                "category-id": row['category_id'],
                 "title": row['title'],
                 "publication_date": row['publication_date'],
                 "image_url": row['image_url'],

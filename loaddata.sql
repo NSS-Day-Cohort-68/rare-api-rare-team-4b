@@ -102,3 +102,7 @@ SELECT * FROM PostReactions;
 SELECT * FROM Tags;
 SELECT * FROM PostTags;
 SELECT * FROM Categories;
+
+
+
+INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Stuff that is true', 2024-03-05, 'na', 'ipsum ipsm cat is loud', 'True')
