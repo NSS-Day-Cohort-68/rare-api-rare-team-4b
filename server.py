@@ -2,7 +2,7 @@ import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from json.decoder import JSONDecodeError
-from views import login_user, create_user, get_user, get_all_users
+from views import login_user, create_user, get_user, get_all_users, get_all_posts
 from helper import has_unsupported_params, missing_fields
 
 
@@ -55,16 +55,17 @@ class JSONServer(HandleRequests):
 
         # posts:
         elif url["requested_resource"] == "posts":
-            # TODO: handle GET posts
-            return self.response(
-                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-            )  #!
+            if url["pk"] !=0:
+                response_body = "This works"
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+            response_body = get_all_posts()
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
         # comments:
         elif url["requested_resource"] == "comments":
             # TODO: handle GET comments
-            return self.response(
-                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-            )  #!
+            return self.response (
+                "feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
+                ) #!
         # categories:
         elif url["requested_resource"] == "categories":
             # TODO: handle GET categories
