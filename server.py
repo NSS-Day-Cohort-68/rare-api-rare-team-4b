@@ -25,7 +25,16 @@ class JSONServer(HandleRequests):
         if url["requested_resource"] == "users":
 
             if has_unsupported_params(
-                url, ["first_name", "last_name", "email", "username", "password", "bio"]
+                url,
+                [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "username",
+                    "password",
+                    "bio",
+                    "login",
+                ],
             ):
                 # request contains bad data
                 return self.response(
