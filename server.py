@@ -2,7 +2,17 @@ import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from json.decoder import JSONDecodeError
-from views import login_user, create_user, get_user, get_all_users, create_category, list_categories, retrieve_categories, specific_post, get_all_posts
+from views import (
+    login_user,
+    create_user,
+    get_user,
+    get_all_users,
+    create_category,
+    list_categories,
+    retrieve_categories,
+    specific_post,
+    get_all_posts,
+)
 
 from helper import has_unsupported_params, missing_fields
 
@@ -26,7 +36,8 @@ class JSONServer(HandleRequests):
                     "email",
                     "username",
                     "password",
-                    "created_on",
+                    "bio",
+                    "login",
                 ],
             ):
                 # request contains bad data
@@ -80,6 +91,45 @@ class JSONServer(HandleRequests):
 
             response_body = list_categories(url)
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
+        # login:
+        elif url["requested_resource"] == "login":
+            if has_unsupported_params(url) or url["pk"] != 0:
+                # request contains bad data
+                return self.response(
+                    "Unsupported parameter specifications.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
+            try:
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                # validate request body
+                missing_request_fields = missing_fields(
+                    request_body, ["username", "password"]
+                )
+
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                existing_user = login_user(request_body)
+
+                if json.loads(existing_user)["valid"]:
+                    return self.response(existing_user, status.HTTP_200_SUCCESS.value)
+                return self.response(
+                    existing_user,
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+
+            except (JSONDecodeError, KeyError):
+                # invalid request
+                return self.response(
+                    "Your request is invalid JSON.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
 
         else:
             # invalid request
@@ -137,7 +187,6 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "Failed to create user.", status.HTTP_500_SERVER_ERROR.value
                     )
-            
 
             elif url["requested_resource"] == "categories":
                 content_len = int(self.headers.get("content-length", 0))
@@ -165,7 +214,6 @@ class JSONServer(HandleRequests):
                 'Cannot POST to a specific row. Did you mean "PUT"?',
                 status.HTTP_405_METHOD_NOT_ALLOWED.value,
             )
-        
 
     def do_PUT(self):
         """handle PUT requests from a client"""
