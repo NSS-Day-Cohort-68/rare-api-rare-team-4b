@@ -11,7 +11,6 @@ CREATE TABLE "Users" (
   "created_on" date,
   "active" bit
 );
-
 CREATE TABLE "DemotionQueue" (
   "action" varchar,
   "admin_id" INTEGER,
@@ -20,8 +19,6 @@ CREATE TABLE "DemotionQueue" (
   FOREIGN KEY(`approver_one_id`) REFERENCES `Users`(`id`),
   PRIMARY KEY (action, admin_id, approver_one_id)
 );
-
-
 CREATE TABLE "Subscriptions" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "follower_id" INTEGER,
@@ -30,7 +27,6 @@ CREATE TABLE "Subscriptions" (
   FOREIGN KEY(`follower_id`) REFERENCES `Users`(`id`),
   FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
 );
-
 CREATE TABLE "Posts" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "user_id" INTEGER,
@@ -42,7 +38,6 @@ CREATE TABLE "Posts" (
   "approved" bit,
   FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
 );
-
 CREATE TABLE "Comments" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "post_id" INTEGER,
@@ -51,13 +46,11 @@ CREATE TABLE "Comments" (
   FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`),
   FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
 );
-
 CREATE TABLE "Reactions" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "label" varchar,
   "image_url" varchar
 );
-
 CREATE TABLE "PostReactions" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "user_id" INTEGER,
@@ -67,12 +60,10 @@ CREATE TABLE "PostReactions" (
   FOREIGN KEY(`reaction_id`) REFERENCES `Reactions`(`id`),
   FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`)
 );
-
 CREATE TABLE "Tags" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "label" varchar
 );
-
 CREATE TABLE "PostTags" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "post_id" INTEGER,
@@ -80,25 +71,36 @@ CREATE TABLE "PostTags" (
   FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`),
   FOREIGN KEY(`tag_id`) REFERENCES `Tags`(`id`)
 );
-
 CREATE TABLE "Categories" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "label" varchar
 );
-
 --* TABLE POPULATION *--
-INSERT INTO Categories ('label') VALUES ('News');
-INSERT INTO Tags ('label') VALUES ('JavaScript');
-INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
-
+INSERT INTO Categories ('label')
+VALUES ('News');
+INSERT INTO Tags ('label')
+VALUES ('JavaScript');
+INSERT INTO Reactions ('label', 'image_url')
+VALUES ('happy', 'https://pngtree.com/so/happy');
 --* DISPLAY ALL *--
-SELECT * FROM Users;
-SELECT * FROM DemotionQueue;
-SELECT * FROM Subscriptions;
-SELECT * FROM Posts;
-SELECT * FROM Comments;
-SELECT * FROM Reactions;
-SELECT * FROM PostReactions;
-SELECT * FROM Tags;
-SELECT * FROM PostTags;
-SELECT * FROM Categories;
+SELECT *
+FROM Users;
+SELECT *
+FROM DemotionQueue;
+SELECT *
+FROM Subscriptions;
+SELECT *
+FROM Posts;
+SELECT *
+FROM Comments;
+SELECT *
+FROM Reactions;
+SELECT *
+FROM PostReactions;
+SELECT *
+FROM Tags;
+SELECT *
+FROM PostTags;
+SELECT *
+FROM Categories;
+INSERT INTO `Posts VALUES( 1,  1,  1,'test 1', '2024-02-28','image url','test 1', 'test 1' )
