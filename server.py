@@ -7,9 +7,13 @@ from views import (
     create_user,
     get_user,
     get_all_users,
+    create_category,
+    list_categories,
+    retrieve_categories,
     specific_post,
     get_all_posts,
 )
+
 from helper import has_unsupported_params, missing_fields
 
 
@@ -81,10 +85,12 @@ class JSONServer(HandleRequests):
             )  #!
         # categories:
         elif url["requested_resource"] == "categories":
-            # TODO: handle GET categories
-            return self.response(
-                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-            )  #!
+            if url["pk"] != 0:
+                response_body = retrieve_categories(url["pk"])
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
+            response_body = list_categories(url)
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
         # login:
         elif url["requested_resource"] == "login":
             if has_unsupported_params(url) or url["pk"] != 0:
@@ -182,11 +188,26 @@ class JSONServer(HandleRequests):
                         "Failed to create user.", status.HTTP_500_SERVER_ERROR.value
                     )
 
-            else:
-                # invalid request
-                return self.response(
-                    "{}", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
+            elif url["requested_resource"] == "categories":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                category_data = json.loads(request_body)
+
+                # Call the create_hauler function to add a new hauler
+                new_category_id = create_category(category_data)
+
+                if new_category_id:
+                    # Respond with the newly created hauler's ID and a success status
+                    response_body = json.dumps({"id": new_category_id})
+                    return self.response(
+                        response_body, status.HTTP_201_SUCCESS_CREATED.value
+                    )
+                else:
+                    # Respond with an error status if hauler creation fails
+                    return self.response(
+                        "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
+                    )
+
         else:
             # incorrectly specified a primary key
             return self.response(
