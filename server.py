@@ -2,7 +2,7 @@ import json
 from http.server import HTTPServer
 from request_handler import HandleRequests, status
 from json.decoder import JSONDecodeError
-from views import login_user, create_user, get_user, get_all_users
+from views import login_user, create_user, get_user, get_all_users, create_tag
 from helper import has_unsupported_params, missing_fields
 
 
@@ -129,11 +129,30 @@ class JSONServer(HandleRequests):
                         "Failed to create user.", status.HTTP_500_SERVER_ERROR.value
                     )
 
-            else:
-                # invalid request
-                return self.response(
-                    "{}", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
+            # tags:
+            elif url["requested_resource"] == "tags":
+                try:
+                    content_len = int(self.headers.get("content-length", 0))
+                    request_body = self.rfile.read(content_len)
+                    request_body = json.loads(request_body)
+
+                    # create the new tag
+                    # Assuming you have a method create_tag in your views module
+                    new_tag = create_tag(request_body)
+                    if new_tag:
+                        return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                    else:
+                        return self.response(
+                            "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
+                        )
+
+                except (JSONDecodeError, KeyError):
+                    # invalid request
+                    return self.response(
+                        "Your request is invalid JSON.",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
         else:
             # incorrectly specified a primary key
             return self.response(
