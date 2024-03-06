@@ -55,17 +55,20 @@ class JSONServer(HandleRequests):
 
         # posts:
         elif url["requested_resource"] == "posts":
-            if url["pk"] !=0:
-                response_body = "This works"
-                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+            if url["pk"] != 0:
+                # TODO: handle GET specific post
+                return self.response(
+                    "Feature is not yet implemented.",
+                    status.HTTP_501_NOT_IMPLEMENTED.value,
+                )  #!
             response_body = get_all_posts()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
         # comments:
         elif url["requested_resource"] == "comments":
             # TODO: handle GET comments
-            return self.response (
-                "feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-                ) #!
+            return self.response(
+                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
+            )  #!
         # categories:
         elif url["requested_resource"] == "categories":
             # TODO: handle GET categories
