@@ -85,6 +85,45 @@ class JSONServer(HandleRequests):
             return self.response(
                 "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
             )  #!
+        # login:
+        elif url["requested_resource"] == "login":
+            if has_unsupported_params(url) or url["pk"] != 0:
+                # request contains bad data
+                return self.response(
+                    "Unsupported parameter specifications.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
+            try:
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                # validate request body
+                missing_request_fields = missing_fields(
+                    request_body, ["username", "password"]
+                )
+
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                existing_user = login_user(request_body)
+
+                if json.loads(existing_user)["valid"]:
+                    return self.response(existing_user, status.HTTP_200_SUCCESS.value)
+                return self.response(
+                    existing_user,
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+
+            except (JSONDecodeError, KeyError):
+                # invalid request
+                return self.response(
+                    "Your request is invalid JSON.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
 
         else:
             # invalid request
