@@ -10,7 +10,7 @@ def login_user(user):
     """Checks for the user in the database
 
     Args:
-        user (dict): Contains the username and password of the user trying to login
+        user (dict): Contains the username and email of the user trying to login
 
     Returns:
         json string: If the user was found will return valid boolean of True and the user's id as the token
@@ -25,9 +25,9 @@ def login_user(user):
             select id, username
             from Users
             where username = ?
-            and password = ?
+            and email = ?
             """,
-            (user["username"], user["password"]),
+            (user["username"], user["email"]),
         )
 
         user_from_db = db_cursor.fetchone()
@@ -55,7 +55,8 @@ def create_user(user):
 
         db_cursor.execute(
             """
-            Insert into Users (first_name, last_name, username, email, password, bio, created_on, active) values (?, ?, ?, ?, ?, ?, ?, 1)
+            INSERT INTO Users (first_name, last_name, username, email, password, bio, created_on, profile_image_url, active) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 user["first_name"],
@@ -65,6 +66,8 @@ def create_user(user):
                 user["password"],
                 user["bio"],
                 datetime.now(),
+                user.get("profile_image_url", ""),
+                user.get("active", 1),
             ),
         )
 
@@ -145,3 +148,23 @@ def get_all_users():
             users.append(row)
 
     return json.dumps(users)
+
+
+def create_tag(tag):
+    print("Tag received:", tag)  # Print statement to see the content of the tag
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            INSERT INTO Tags (label)
+            VALUES (?)
+            """,
+            (tag["label"],),
+        )
+
+        # Get the last inserted row to confirm the creation
+        rows_affected = db_cursor.rowcount
+
+    return True if rows_affected > 0 else False

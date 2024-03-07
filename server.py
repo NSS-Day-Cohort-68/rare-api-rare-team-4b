@@ -7,9 +7,14 @@ from views import (
     create_user,
     get_user,
     get_all_users,
+    create_category,
+    list_categories,
+    retrieve_categories,
     specific_post,
     get_all_posts,
+    create_tag,
 )
+
 from helper import has_unsupported_params, missing_fields
 
 
@@ -26,14 +31,7 @@ class JSONServer(HandleRequests):
 
             if has_unsupported_params(
                 url,
-                [
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "username",
-                    "password",
-                    "created_on",
-                ],
+                ["first_name", "last_name", "email", "username"],
             ):
                 # request contains bad data
                 return self.response(
@@ -80,10 +78,51 @@ class JSONServer(HandleRequests):
             )  #!
         # categories:
         elif url["requested_resource"] == "categories":
-            # TODO: handle GET categories
-            return self.response(
-                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-            )  #!
+            if url["pk"] != 0:
+                response_body = retrieve_categories(url["pk"])
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
+            response_body = list_categories(url)
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+        # login:
+        elif url["requested_resource"] == "login":
+            if has_unsupported_params(url) or url["pk"] != 0:
+                # request contains bad data
+                return self.response(
+                    "Unsupported parameter specifications.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
+            try:
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                # validate request body
+                missing_request_fields = missing_fields(
+                    request_body, ["username", "email"]
+                )
+
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                existing_user = login_user(request_body)
+
+                if json.loads(existing_user)["valid"]:
+                    return self.response(existing_user, status.HTTP_200_SUCCESS.value)
+                return self.response(
+                    existing_user,
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+
+            except (JSONDecodeError, KeyError):
+                # invalid request
+                return self.response(
+                    "Your request is invalid JSON.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
 
         else:
             # invalid request
@@ -105,14 +144,7 @@ class JSONServer(HandleRequests):
                     request_body = json.loads(request_body)
 
                     # validate request body
-                    required_fields = [
-                        "first_name",
-                        "last_name",
-                        "username",
-                        "email",
-                        "password",
-                        "bio",
-                    ]
+                    required_fields = ["first_name", "last_name", "username", "email"]
                     missing_request_fields = missing_fields(
                         request_body, required_fields
                     )
@@ -142,11 +174,50 @@ class JSONServer(HandleRequests):
                         "Failed to create user.", status.HTTP_500_SERVER_ERROR.value
                     )
 
-            else:
-                # invalid request
-                return self.response(
-                    "{}", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
+            # tags:
+            elif url["requested_resource"] == "tags":
+                try:
+                    content_len = int(self.headers.get("content-length", 0))
+                    request_body = self.rfile.read(content_len)
+                    request_body = json.loads(request_body)
+
+                    # create the new tag
+                    # Assuming you have a method create_tag in your views module
+                    new_tag = create_tag(request_body)
+                    if new_tag:
+                        return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                    else:
+                        return self.response(
+                            "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
+                        )
+
+                except (JSONDecodeError, KeyError):
+                    # invalid request
+                    return self.response(
+                        "Your request is invalid JSON.",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+            elif url["requested_resource"] == "categories":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                category_data = json.loads(request_body)
+
+                # Call the create_hauler function to add a new hauler
+                new_category_id = create_category(category_data)
+
+                if new_category_id:
+                    # Respond with the newly created hauler's ID and a success status
+                    response_body = json.dumps({"id": new_category_id})
+                    return self.response(
+                        response_body, status.HTTP_201_SUCCESS_CREATED.value
+                    )
+                else:
+                    # Respond with an error status if hauler creation fails
+                    return self.response(
+                        "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
+                    )
+
         else:
             # incorrectly specified a primary key
             return self.response(
