@@ -46,9 +46,7 @@ class JSONServer(HandleRequests):
                 if fetched_user:
                     return self.response(fetched_user, status.HTTP_200_SUCCESS.value)
                 else:
-                    return self.response(
-                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                    )
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
 
             # user email was specified
             if "email" in url["query_params"]:
@@ -56,16 +54,14 @@ class JSONServer(HandleRequests):
                 if fetched_user:
                     return self.response(fetched_user, status.HTTP_200_SUCCESS.value)
                 else:
-                    return self.response(
-                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                    )
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
 
             # user id and email were not specified
             fetched_users = get_all_users()
             if fetched_users:
                 return self.response(fetched_users, status.HTTP_200_SUCCESS.value)
             else:
-                return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
+                return self.response("[]", status.HTTP_200_SUCCESS.value)
 
         # posts:
         elif url["requested_resource"] == "posts":
@@ -74,9 +70,7 @@ class JSONServer(HandleRequests):
                 if response_body:
                     return self.response(response_body, status.HTTP_200_SUCCESS.value)
                 else:
-                    return self.response(
-                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                    )
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
             response_body = get_all_posts()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
         # comments:
