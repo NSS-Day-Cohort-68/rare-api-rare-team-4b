@@ -30,15 +30,7 @@ class JSONServer(HandleRequests):
 
             if has_unsupported_params(
                 url,
-                [
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "username",
-                    "password",
-                    "bio",
-                    "login",
-                ],
+                ["first_name", "last_name", "email", "username"],
             ):
                 # request contains bad data
                 return self.response(
@@ -106,7 +98,7 @@ class JSONServer(HandleRequests):
 
                 # validate request body
                 missing_request_fields = missing_fields(
-                    request_body, ["username", "password"]
+                    request_body, ["username", "email"]
                 )
 
                 if missing_request_fields:
@@ -151,14 +143,7 @@ class JSONServer(HandleRequests):
                     request_body = json.loads(request_body)
 
                     # validate request body
-                    required_fields = [
-                        "first_name",
-                        "last_name",
-                        "username",
-                        "email",
-                        "password",
-                        "bio",
-                    ]
+                    required_fields = ["first_name", "last_name", "username", "email"]
                     missing_request_fields = missing_fields(
                         request_body, required_fields
                     )
