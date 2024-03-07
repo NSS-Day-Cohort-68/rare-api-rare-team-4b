@@ -148,3 +148,23 @@ def get_all_users():
             users.append(row)
 
     return json.dumps(users)
+
+
+def create_tag(tag):
+    print("Tag received:", tag)  # Print statement to see the content of the tag
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            INSERT INTO Tags (label)
+            VALUES (?)
+            """,
+            (tag["label"],),
+        )
+
+        # Get the last inserted row to confirm the creation
+        rows_affected = db_cursor.rowcount
+
+    return True if rows_affected > 0 else False
