@@ -55,7 +55,7 @@ def get_all_posts():
             post = {
                 "id": row["id"],
                 "user_id": row["user_id"],
-                "category-id": row["category_id"],
+                "category_id": row["category_id"],
                 "title": row["title"],
                 "publication_date": row["publication_date"],
                 "image_url": row["image_url"],

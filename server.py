@@ -46,7 +46,7 @@ class JSONServer(HandleRequests):
                     return self.response(fetched_user, status.HTTP_200_SUCCESS.value)
                 else:
                     return self.response(
-                        "{}", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                        "{}", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
 
             # user id was not specified
@@ -55,7 +55,7 @@ class JSONServer(HandleRequests):
                 return self.response(fetched_users, status.HTTP_200_SUCCESS.value)
             else:
                 return self.response(
-                    "[]", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    "[]", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                 )
 
         # posts:
@@ -66,7 +66,7 @@ class JSONServer(HandleRequests):
                     return self.response(response_body, status.HTTP_200_SUCCESS.value)
                 else:
                     return self.response(
-                        "{}", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                        "{}", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
             response_body = get_all_posts()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
@@ -204,14 +204,7 @@ class JSONServer(HandleRequests):
 
                     existing_user = login_user(request_body)
 
-                    if json.loads(existing_user)["valid"]:
-                        return self.response(
-                            existing_user, status.HTTP_200_SUCCESS.value
-                        )
-                    return self.response(
-                        existing_user,
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
-                    )
+                    return self.response(existing_user, status.HTTP_200_SUCCESS.value)
 
                 except (JSONDecodeError, KeyError):
                     # invalid request
