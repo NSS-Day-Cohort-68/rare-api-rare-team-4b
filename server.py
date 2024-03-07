@@ -13,6 +13,7 @@ from views import (
     specific_post,
     get_all_posts,
     create_tag,
+    get_user_by_email,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -46,17 +47,25 @@ class JSONServer(HandleRequests):
                     return self.response(fetched_user, status.HTTP_200_SUCCESS.value)
                 else:
                     return self.response(
-                        "{}", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
 
-            # user id was not specified
+            # user email was specified
+            if "email" in url["query_params"]:
+                fetched_user = get_user_by_email(url["query_params"]["email"][0])
+                if fetched_user:
+                    return self.response(fetched_user, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+
+            # user id and email were not specified
             fetched_users = get_all_users()
             if fetched_users:
                 return self.response(fetched_users, status.HTTP_200_SUCCESS.value)
             else:
-                return self.response(
-                    "[]", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                )
+                return self.response("", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value)
 
         # posts:
         elif url["requested_resource"] == "posts":
@@ -66,7 +75,7 @@ class JSONServer(HandleRequests):
                     return self.response(response_body, status.HTTP_200_SUCCESS.value)
                 else:
                     return self.response(
-                        "{}", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
             response_body = get_all_posts()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)

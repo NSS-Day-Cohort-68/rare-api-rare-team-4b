@@ -114,6 +114,44 @@ def get_user(pk):
     return json.dumps(query_results) if query_results else None
 
 
+def get_user_by_email(email):
+    """Retrieves one user from the database by email
+
+    Args:
+        email (str): The email of the user to retrieve
+
+    Returns:
+        json string: A JSON string containing the user's details if found, otherwise None
+    """
+
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            SELECT
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.bio,
+                u.username,
+                u.password,
+                u.profile_image_url,
+                u.created_on,
+                u.active
+            FROM Users u
+            WHERE u.email = ?
+            """,
+            (email,),
+        )
+
+        query_results = db_cursor.fetchone()
+
+    return json.dumps(query_results) if query_results else None
+
+
 def get_all_users():
     """Retrieves all users from the database
 
@@ -151,7 +189,6 @@ def get_all_users():
 
 
 def create_tag(tag):
-    # print("Tag received:", tag)  # Print statement to see the content of the tag
     with sqlite3.connect(database) as conn:
         conn.row_factory = dict_factory
         db_cursor = conn.cursor()
