@@ -63,10 +63,10 @@ def create_user(user):
                 user["last_name"],
                 user["username"],
                 user["email"],
-                user["password"],
-                user["bio"],
+                user.get("password", None),
+                user.get("bio", None),
                 datetime.now(),
-                user.get("profile_image_url", ""),
+                user.get("profile_image_url", None),
                 user.get("active", 1),
             ),
         )
@@ -151,7 +151,7 @@ def get_all_users():
 
 
 def create_tag(tag):
-    print("Tag received:", tag)  # Print statement to see the content of the tag
+    # print("Tag received:", tag)  # Print statement to see the content of the tag
     with sqlite3.connect(database) as conn:
         conn.row_factory = dict_factory
         db_cursor = conn.cursor()
