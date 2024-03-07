@@ -116,3 +116,5 @@ VALUES ('Jane', 'Doe', 'jane.doe@example.com', 'Data Scientist', 'janedoe', 'pas
 
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
 VALUES ('Alice', 'Smith', 'alice.smith@example.com', 'Product Manager', 'alicesmith', 'password789', 'https://example.com/alicesmith.jpg', '2023-04-03', 1);
+
+
