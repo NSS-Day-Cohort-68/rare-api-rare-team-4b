@@ -10,7 +10,7 @@ def login_user(user):
     """Checks for the user in the database
 
     Args:
-        user (dict): Contains the username and password of the user trying to login
+        user (dict): Contains the username and email of the user trying to login
 
     Returns:
         json string: If the user was found will return valid boolean of True and the user's id as the token
@@ -25,9 +25,9 @@ def login_user(user):
             select id, username
             from Users
             where username = ?
-            and password = ?
+            and email = ?
             """,
-            (user["username"], user["password"]),
+            (user["username"], user["email"]),
         )
 
         user_from_db = db_cursor.fetchone()
