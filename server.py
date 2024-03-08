@@ -79,7 +79,7 @@ class JSONServer(HandleRequests):
         elif url["requested_resource"] == "comments":
             if url["pk"] != 0:
                 response_body = get_single_comment(url["pk"])
-                return self.response(response_body, status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
             response_body = get_comments()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
