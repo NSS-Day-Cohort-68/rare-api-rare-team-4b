@@ -118,3 +118,4 @@ INSERT INTO Users (first_name, last_name, email, bio, username, password, profil
 VALUES ('Alice', 'Smith', 'alice.smith@example.com', 'Product Manager', 'alicesmith', 'password789', 'https://example.com/alicesmith.jpg', '2023-04-03', 1);
 
 
+INSERT INTO Comments (post_id, author_id, content) VALUES (1, 1, "I love cats!");

@@ -14,6 +14,8 @@ from views import (
     get_all_posts,
     create_tag,
     get_user_by_email,
+    get_comments,
+    get_single_comment,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -75,10 +77,12 @@ class JSONServer(HandleRequests):
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
         # comments:
         elif url["requested_resource"] == "comments":
-            # TODO: handle GET comments
-            return self.response(
-                "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-            )  #!
+            if url["pk"] != 0:
+                response_body = get_single_comment(url["pk"])
+                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+            response_body = get_comments()
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
         # categories:
         elif url["requested_resource"] == "categories":
             if url["pk"] != 0:
