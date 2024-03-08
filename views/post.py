@@ -38,7 +38,33 @@ def specific_post(pk):
         )
 
         query_results = db_cursor.fetchone()
-    return json.dumps(query_results) if query_results else None
+        if query_results:
+            user = {
+                "id": query_results["user_id"],
+                "first_name": query_results["first_name"],
+                "last_name": query_results["last_name"],
+                "username": query_results["username"],
+                "email": query_results["email"],
+            }
+            category = {
+                "id": query_results["category_id"],
+                "label": query_results["label"],
+            }
+            post = {
+                "id": query_results["id"],
+                "title": query_results["title"],
+                "image_url": query_results["image_url"],
+                "publication_date": query_results["publication_date"],
+                "content": query_results["content"],
+                "approved": query_results["approved"],
+                "user_id": query_results["user_id"],
+                "user": user,
+                "category_id": query_results["category_id"],
+                "category": category,
+            }
+            return json.dumps(post)
+
+    return None
 
 
 def get_all_posts():
