@@ -13,21 +13,31 @@ def specific_post(pk):
 
         db_cursor.execute(
             """
-                SELECT
-                    p.id,
-                    p.title,
-                    p.content,
-                    p.publication_date,
-                    u.username
-                FROM Posts p
-                JOIN Users u
-                    ON u.id = p.user_id
-                WHERE p.id = ?
-                    """,
+            SELECT
+                p.id,
+                p.user_id,
+                p.category_id,
+                p.title,
+                p.image_url,
+                p.publication_date,
+                p.content,
+                p.approved,
+                u.first_name,
+                u.last_name,
+                u.username,
+                u.email,
+                c.label
+            FROM Posts p
+            JOIN Users u
+                ON u.id = p.user_id
+            JOIN Categories c
+                ON c.id = p.category_id
+            WHERE p.id = ?
+            """,
             (pk,),
         )
 
-    query_results = db_cursor.fetchone()
+        query_results = db_cursor.fetchone()
     return json.dumps(query_results) if query_results else None
 
 

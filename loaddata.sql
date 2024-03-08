@@ -111,13 +111,13 @@ SELECT * FROM Categories;
 --? TEST DATA ?--
 -- test users
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
-VALUES ('John', 'Doe', 'john.doe@example.com', 'Software Developer', 'johndoe', 'password123', 'https://example.com/johndoe.jpg', '2023-04-01', 1);
+VALUES ('John', 'Doe', 'john@example.com', 'Software Developer', 'johndoe', 'password123', NULL, '2023-04-01', 1);
 
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
-VALUES ('Jane', 'Doe', 'jane.doe@example.com', 'Data Scientist', 'janedoe', 'password456', 'https://example.com/janedoe.jpg', '2023-04-02', 1);
+VALUES ('Jane', 'Doe', 'jane@example.com', 'Data Scientist', 'janedoe', 'password456', NULL, '2023-04-02', 1);
 
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
-VALUES ('Alice', 'Smith', 'alice.smith@example.com', 'Product Manager', 'alicesmith', 'password789', 'https://example.com/alicesmith.jpg', '2023-04-03', 1);
+VALUES ('Alice', 'Smith', 'alice@example.com', 'Product Manager', 'alice', 'password789', NULL, '2023-04-03', 1);
 
 -- test comments
 INSERT INTO Comments (post_id, author_id, content) VALUES (1, 1, "I love cats!");
