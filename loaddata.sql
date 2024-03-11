@@ -119,3 +119,7 @@ VALUES ('Alice', 'Smith', 'alice.smith@example.com', 'Product Manager', 'alicesm
 
 
 INSERT INTO Comments (post_id, author_id, content) VALUES (1, 1, "I love cats!");
+
+INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (1, 1, 'stuff that is really true', '2023-04-02', 'na','ipsum ipsm fat cat is loud', 'True'); 
+
+UPDATE Posts SET publication_date = "2022-03-08" WHERE id = 1;
