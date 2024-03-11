@@ -6,6 +6,7 @@ from .user import (
     create_tag,
     get_user_by_email,
 )
-from .category_view import create_category, list_categories, retrieve_categories
+from .category import create_category, list_categories, retrieve_categories
 from .post import get_all_posts, specific_post
-from .comments import get_comments, get_single_comment, add_comment
+from .tag import get_tag, get_all_tags
+from .comment import get_comments, get_single_comment, add_comment
