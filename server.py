@@ -16,6 +16,8 @@ from views import (
     get_user_by_email,
     get_comments,
     get_single_comment,
+    get_tag,
+    get_all_tags,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -90,6 +92,18 @@ class JSONServer(HandleRequests):
                 return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
             response_body = list_categories(url)
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
+        # tags:
+        elif url["requested_resource"] == "tags":
+            if url["pk"] != 0:
+                fetched_tag = get_tag(url["pk"])
+                if fetched_tag:
+                    return self.response(fetched_tag, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+
+            response_body = get_all_tags()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
         else:

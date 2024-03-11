@@ -9,3 +9,4 @@ from .user import (
 from .category import create_category, list_categories, retrieve_categories
 from .post import get_all_posts, specific_post
 from .comment import get_comments, get_single_comment
+from .tag import get_tag, get_all_tags
