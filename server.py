@@ -89,7 +89,10 @@ class JSONServer(HandleRequests):
         elif url["requested_resource"] == "categories":
             if url["pk"] != 0:
                 response_body = retrieve_categories(url["pk"])
-                return self.response(response_body, status.HTTP_200_SUCCESS.value)
+                if response_body:
+                    return self.response(response_body, status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
 
             response_body = list_categories(url)
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
