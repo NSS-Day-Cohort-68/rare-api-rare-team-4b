@@ -4,6 +4,7 @@ from .views_helper import dict_factory
 
 database = "./db.sqlite3"
 
+
 def get_comments():
 
     with sqlite3.connect(database) as conn:
@@ -23,10 +24,10 @@ def get_comments():
 
         for row in query_results:
             comment = {
-                "id": row['id'],
-                "post_id": row['post_id'],
-                "author_id": row['author_id'],
-                "content": row['content']
+                "id": row["id"],
+                "post_id": row["post_id"],
+                "author_id": row["author_id"],
+                "content": row["content"],
             }
             comments.append(comment)
         serialized_comments = json.dumps(comments)
@@ -39,7 +40,7 @@ def get_single_comment(pk):
         db_cursor = conn.cursor()
 
         db_cursor.execute(
-        """
+            """
             SELECT
                 c.id,
                 c.post_id,
@@ -47,9 +48,30 @@ def get_single_comment(pk):
                 c.content
             FROM Comments c
             WHERE c.id = ?
-        """,(pk,))
+        """,
+            (pk,),
+        )
         query_results = db_cursor.fetchone()
 
         dictionary_version_of_object = dict(query_results)
         serialized_comment = json.dumps(dictionary_version_of_object)
     return serialized_comment
+
+
+def add_comment(data):
+    with sqlite3.connect(database) as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+                INSERT INTO Comments (post_id, author_id, content)
+                VALUES (?,?,?)
+            """,
+            (
+                data["post_id"],
+                data["author_id"],
+                data["content"],
+            ),
+        )
+        rows_affected = db_cursor.rowcount
+    return True if rows_affected > 0 else False
