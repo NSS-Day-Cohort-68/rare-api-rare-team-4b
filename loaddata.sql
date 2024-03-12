@@ -107,7 +107,6 @@ SELECT * FROM Tags;
 SELECT * FROM PostTags;
 SELECT * FROM Categories;
 
-
 --? TEST DATA ?--
 -- test users
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
