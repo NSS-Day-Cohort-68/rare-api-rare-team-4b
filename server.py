@@ -18,6 +18,7 @@ from views import (
     get_single_comment,
     get_tag,
     get_all_tags,
+    add_comment,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -182,6 +183,18 @@ class JSONServer(HandleRequests):
                         "Your request is invalid JSON.",
                         status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                     )
+            elif url["requested_resource"] == "comments":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                successfully_added = add_comment(request_body)
+                if successfully_added:
+                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                return self.response(
+                    "Requested resource not found",
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
 
             elif url["requested_resource"] == "categories":
                 content_len = int(self.headers.get("content-length", 0))
