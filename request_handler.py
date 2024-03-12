@@ -17,6 +17,7 @@ class status(Enum):
     HTTP_411_LENGTH_REQUIRED = 411
     HTTP_412_PRECONDITION_FAILED = 412
     HTTP_501_NOT_IMPLEMENTED = 501
+    HTTP_403_FORBIDDEN = 403
 
 
 class HandleRequests(BaseHTTPRequestHandler):

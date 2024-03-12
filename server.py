@@ -19,6 +19,7 @@ from views import (
     get_tag,
     get_all_tags,
     add_comment,
+    delete_category,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -273,10 +274,29 @@ class JSONServer(HandleRequests):
     def do_DELETE(self):
         """handle DELETE requests from a client"""
 
-        # TODO: handle DELETE requests
-        return self.response(
-            "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-        )  #!
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+
+        if url["requested_resource"] == "categories":
+            if pk != 0:
+                deleted = delete_category(pk)
+                if deleted:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+
+                return self.response(
+                    "Requested resource not found",
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+            else:
+                return self.response("", status.HTTP_403_FORBIDDEN.value)
+
+        else:
+            # invalid request
+            return self.response(
+                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
 
 
 def main():
