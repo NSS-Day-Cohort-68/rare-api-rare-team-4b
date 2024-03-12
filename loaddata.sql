@@ -107,7 +107,6 @@ SELECT * FROM Tags;
 SELECT * FROM PostTags;
 SELECT * FROM Categories;
 
-
 --? TEST DATA ?--
 -- test users
 INSERT INTO Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active)
@@ -131,10 +130,3 @@ VALUES (2, 1, 'Second Example Post', '2023-04-02 00:00:00', null, 'Lorem ipsum d
 
 INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved)
 VALUES (3, 1, 'Third Example Post', '2023-04-03 00:00:00', 'https://www.pixelstalk.net/wp-content/uploads/2016/07/Wallpapers-pexels-photo.jpg', 'Lorem ipsum dolor sit amet consectetur adipiscing elit leo, et inceptos eget mus cum rutrum potenti, praesent libero tortor morbi condimentum tempor ullamcorper. Placerat semper facilisi netus nascetur tellus sapien habitasse magna natoque, sodales odio arcu velit hac elementum porttitor mattis magnis, mi gravida viverra quis per mollis nullam luctus. Faucibus massa erat posuere quisque varius ornare lobortis nisi, nunc vivamus penatibus sollicitudin sociosqu pellentesque ligula felis, dapibus conubia purus justo torquent egestas convallis. Imperdiet nibh nostra integer molestie feugiat duis diam accumsan phasellus ante class, auctor ad rhoncus nam bibendum orci donec facilisis urna pulvinar. Eleifend dis fermentum parturient pretium vestibulum augue euismod nec, consequat vulputate habitant eu curae suscipit vitae venenatis, eros risus at sagittis ridiculus congue himenaeos.', 1);
-
-
--- test posts
-
-INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (1, 1, 'stuff that is really true', '2023-04-02', 'na','ipsum ipsm fat cat is loud', 'True'); 
-
-UPDATE Posts SET publication_date = "2022-03-08" WHERE id = 1;

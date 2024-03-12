@@ -17,7 +17,7 @@ def create_category(category_data):
             INSERT INTO Categories (label)
             VALUES (?)
             """,
-            (category_data["label"],)
+            (category_data["label"],),
         )
 
         # Get the last inserted row id to confirm the creation
@@ -34,23 +34,20 @@ def list_categories(url):
         db_cursor = conn.cursor()
 
         db_cursor.execute(
-                """
+            """
             SELECT
                 c.id,
                 c.label
             FROM Categories c              
             """
-            )
+        )
         query_results = db_cursor.fetchall()
 
         # Initialize an empty list and then add each dictionary to it
 
         categories = []
         for row in query_results:
-            category = {
-                "id": row['id'],
-                "label": row['label']
-            }
+            category = {"id": row["id"], "label": row["label"]}
             categories.append(category)
 
         # Serialize Python list to JSON encoded string
@@ -118,3 +115,19 @@ def retrieve_categories(pk, expand=False):
         serialized_category = json.dumps(category)
 
     return serialized_category
+
+
+def delete_category(pk):
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            DELETE FROM Categories
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+    return True if db_cursor.rowcount > 0 else False
