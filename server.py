@@ -281,9 +281,7 @@ class JSONServer(HandleRequests):
             if pk != 0:
                 deleted = delete_category(pk)
                 if deleted:
-                    return self.response(
-                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                    )
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                 return self.response(
                     "Requested resource not found",
