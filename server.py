@@ -20,6 +20,7 @@ from views import (
     get_all_tags,
     add_comment,
     delete_category,
+    delete_post,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -289,7 +290,15 @@ class JSONServer(HandleRequests):
                 )
             else:
                 return self.response("", status.HTTP_403_FORBIDDEN.value)
-
+        elif url["requested_resource"] == "posts":
+            if pk != 0:
+                deleted = delete_post(pk)
+                if deleted:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+                return self.response(
+                    "Requested Resource Not Found",
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
         else:
             # invalid request
             return self.response(
