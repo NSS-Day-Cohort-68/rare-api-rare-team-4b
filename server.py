@@ -169,10 +169,11 @@ class JSONServer(HandleRequests):
                     request_body = json.loads(request_body)
 
                     # create the new tag
-                    # Assuming you have a method create_tag in your views module
                     new_tag = create_tag(request_body)
                     if new_tag:
-                        return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                        return self.response(
+                            "{}", status.HTTP_201_SUCCESS_CREATED.value
+                        )
                     else:
                         return self.response(
                             "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
@@ -191,7 +192,7 @@ class JSONServer(HandleRequests):
 
                 successfully_added = add_comment(request_body)
                 if successfully_added:
-                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
                 return self.response(
                     "Requested resource not found",
                     status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
@@ -202,19 +203,16 @@ class JSONServer(HandleRequests):
                 request_body = self.rfile.read(content_len)
                 category_data = json.loads(request_body)
 
-                # Call the create_hauler function to add a new hauler
                 new_category_id = create_category(category_data)
 
                 if new_category_id:
-                    # Respond with the newly created hauler's ID and a success status
                     response_body = json.dumps({"id": new_category_id})
                     return self.response(
                         response_body, status.HTTP_201_SUCCESS_CREATED.value
                     )
                 else:
-                    # Respond with an error status if hauler creation fails
                     return self.response(
-                        "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
+                        "Failed to create category", status.HTTP_500_SERVER_ERROR.value
                     )
             # login:
             elif url["requested_resource"] == "login":
