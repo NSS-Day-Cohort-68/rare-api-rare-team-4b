@@ -212,7 +212,7 @@ class JSONServer(HandleRequests):
                     )
                 else:
                     return self.response(
-                        "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
+                        "Failed to create category", status.HTTP_500_SERVER_ERROR.value
                     )
             # login:
             elif url["requested_resource"] == "login":
