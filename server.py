@@ -19,6 +19,8 @@ from views import (
     get_tag,
     get_all_tags,
     add_comment,
+    delete_category,
+    delete_tag,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -168,10 +170,11 @@ class JSONServer(HandleRequests):
                     request_body = json.loads(request_body)
 
                     # create the new tag
-                    # Assuming you have a method create_tag in your views module
                     new_tag = create_tag(request_body)
                     if new_tag:
-                        return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                        return self.response(
+                            "{}", status.HTTP_201_SUCCESS_CREATED.value
+                        )
                     else:
                         return self.response(
                             "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
@@ -190,7 +193,7 @@ class JSONServer(HandleRequests):
 
                 successfully_added = add_comment(request_body)
                 if successfully_added:
-                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
                 return self.response(
                     "Requested resource not found",
                     status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
@@ -201,19 +204,16 @@ class JSONServer(HandleRequests):
                 request_body = self.rfile.read(content_len)
                 category_data = json.loads(request_body)
 
-                # Call the create_hauler function to add a new hauler
                 new_category_id = create_category(category_data)
 
                 if new_category_id:
-                    # Respond with the newly created hauler's ID and a success status
                     response_body = json.dumps({"id": new_category_id})
                     return self.response(
                         response_body, status.HTTP_201_SUCCESS_CREATED.value
                     )
                 else:
-                    # Respond with an error status if hauler creation fails
                     return self.response(
-                        "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
+                        "Failed to create category", status.HTTP_500_SERVER_ERROR.value
                     )
             # login:
             elif url["requested_resource"] == "login":
@@ -273,10 +273,37 @@ class JSONServer(HandleRequests):
     def do_DELETE(self):
         """handle DELETE requests from a client"""
 
-        # TODO: handle DELETE requests
-        return self.response(
-            "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-        )  #!
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+
+        if pk != 0:
+            if url["requested_resource"] == "categories":
+                deleted = delete_category(pk)
+                if deleted:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
+
+            elif url["requested_resource"] == "tags":
+                if pk != 0:
+                    deleted = delete_tag(pk)
+                    if deleted:
+                        return self.response("{}", status.HTTP_200_SUCCESS.value)
+
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+
+            else:
+                # invalid request
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
+        else:
+            # invalid request
+            return self.response("", status.HTTP_403_FORBIDDEN.value)
 
 
 def main():
