@@ -139,3 +139,6 @@ INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, con
 UPDATE Posts SET publication_date = "2022-03-08" WHERE id = 1;
 
 ALTER TABLE Comments ADD date integer
+
+INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved)
+VALUES (1, 1, 'Example Post', '2023-04-01 00:00:00', 'https://jooinn.com/images/beauty-of-nature-24.jpg', 'Lorem ipsum...', 1);

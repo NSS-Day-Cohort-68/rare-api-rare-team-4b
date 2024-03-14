@@ -14,7 +14,7 @@ def get_comments():
         db_cursor.execute(
             """
             SELECT 
-                c.id,
+                c.id AS comment_id,
                 c.post_id,
                 c.author_id,
                 c.content,
@@ -23,7 +23,7 @@ def get_comments():
                 u.last_name,
                 u.username,
                 u.email,
-                u.id
+                u.id AS user_id
             FROM Comments C
             JOIN Users u
                 on u.id = c.author_id
@@ -36,14 +36,14 @@ def get_comments():
 
         for row in query_results:
             user = {
-                "id": row["id"],
+                "id": row["user_id"],
                 "first_name": row["first_name"],
                 "last_name": row["last_name"],
                 "username": row["username"],
                 "email": row["email"],
             }
             comment = {
-                "id": row["id"],
+                "id": row["comment_id"],
                 "post_id": row["post_id"],
                 "author_id": row["author_id"],
                 "content": row["content"],
