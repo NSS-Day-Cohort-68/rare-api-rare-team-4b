@@ -1,6 +1,7 @@
 import sqlite3
 import json
 from .views_helper import dict_factory
+from datetime import datetime
 
 database = "./db.sqlite3"
 
@@ -94,7 +95,7 @@ def add_comment(data):
                 data["post_id"],
                 data["author_id"],
                 data["content"],
-                data["date"],
+                datetime.now(),
             ),
         )
         rows_affected = db_cursor.rowcount
