@@ -13,5 +13,5 @@ from .category import (
     delete_category,
 )
 from .post import get_all_posts, specific_post
-from .tag import get_tag, get_all_tags
+from .tag import get_tag, get_all_tags, delete_tag
 from .comment import get_comments, get_single_comment, add_comment
