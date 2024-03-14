@@ -190,6 +190,21 @@ class JSONServer(HandleRequests):
                         "Your request is invalid JSON.",
                         status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                     )
+
+            elif url["requested_resource"] == "post-tags":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                # create the new tag
+                new_tag = create_tag(request_body)
+                if new_tag:
+                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
+                else:
+                    return self.response(
+                        "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
+                    )
+
             elif url["requested_resource"] == "comments":
                 content_len = int(self.headers.get("content-length", 0))
                 request_body = self.rfile.read(content_len)
