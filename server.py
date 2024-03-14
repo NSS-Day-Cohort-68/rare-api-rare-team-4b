@@ -22,6 +22,7 @@ from views import (
     delete_category,
     delete_post,
     add_tag_to_post,
+    delete_tag,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -290,15 +291,14 @@ class JSONServer(HandleRequests):
         url = self.parse_url(self.path)
         pk = url["pk"]
 
-        if url["requested_resource"] == "categories":
-            if pk != 0:
+        if pk != 0:
+            if url["requested_resource"] == "categories":
                 deleted = delete_category(pk)
                 if deleted:
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                 return self.response(
-                    "Requested resource not found",
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                 )
             else:
                 return self.response("", status.HTTP_403_FORBIDDEN.value)
@@ -311,11 +311,25 @@ class JSONServer(HandleRequests):
                     "Requested Resource Not Found",
                     status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                 )
+
+            elif url["requested_resource"] == "tags":
+                if pk != 0:
+                    deleted = delete_tag(pk)
+                    if deleted:
+                        return self.response("{}", status.HTTP_200_SUCCESS.value)
+
+                    return self.response(
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+
+            else:
+                # invalid request
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
         else:
             # invalid request
-            return self.response(
-                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-            )
+            return self.response("", status.HTTP_403_FORBIDDEN.value)
 
 
 def main():
