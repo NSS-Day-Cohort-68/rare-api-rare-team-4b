@@ -216,12 +216,7 @@ VALUES (
     1
   );
 INSERT INTO Posts (
-    user_id,
-    category_id,
-    title,
-    publication_date,
-    image_url,
-    content,
+    user_id, category_id, title, publication_date, image_url, content,
     approved
   )
 VALUES (
