@@ -17,11 +17,9 @@ from views import (
     get_comments,
     get_single_comment,
     get_tag,
-    get_all_tags,
+    get_all_post_tags,
     add_comment,
     delete_category,
-    delete_post,
-    add_tag_to_post,
     delete_tag,
 )
 
@@ -111,7 +109,11 @@ class JSONServer(HandleRequests):
                 else:
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
 
-            response_body = get_all_tags()
+            response_body = get_all_post_tags()
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
+        elif url["requested_resource"] == "post-tags":
+            response_body = get_all_post_tags()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
         else:
@@ -217,19 +219,6 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "Failed to create category", status.HTTP_500_SERVER_ERROR.value
                     )
-            elif url["requested_resource"] == "posts":
-                content_len = int(self.headers.get("content-length", 0))
-                request_body = self.rfile.read(content_len)
-                request_body = json.loads(request_body)
-
-                successfully_added = add_tag_to_post(request_body)
-                if successfully_added:
-                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
-                return self.response(
-                    "Requested resource not found",
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
-                )
-
             # login:
             elif url["requested_resource"] == "login":
                 if has_unsupported_params(url) or url["pk"] != 0:
@@ -299,17 +288,6 @@ class JSONServer(HandleRequests):
 
                 return self.response(
                     "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
-            else:
-                return self.response("", status.HTTP_403_FORBIDDEN.value)
-        elif url["requested_resource"] == "posts":
-            if pk != 0:
-                deleted = delete_post(pk)
-                if deleted:
-                    return self.response("{}", status.HTTP_200_SUCCESS.value)
-                return self.response(
-                    "Requested Resource Not Found",
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                 )
 
             elif url["requested_resource"] == "tags":

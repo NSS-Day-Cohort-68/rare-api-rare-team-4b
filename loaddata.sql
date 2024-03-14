@@ -251,5 +251,11 @@ VALUES (
     'Letsget it erased!  mattis magnis, mi gravida viverra quis per mollis nullam luctus. Faucibus massa erat posuere quisque varius ornare lobortis nisi, nunc vivamus penatibus sollicitudin sociosqu pellentesque ligula felis, dapibus conubia purus justo torquent egestas convallis. Imperdiet nibh nostra integer molestie feugiat duis diam accumsan phasellus ante class, auctor ad rhoncus nam bibendum orci donec facilisis urna pulvinar. Eleifend dis fermentum parturient pretium vestibulum augue euismod nec, consequat vulputate habitant eu curae suscipit vitae venenatis, eros risus at sagittis ridiculus congue himenaeos.',
     1
   );
-DELETE FROM Posts;
-DROP TABLE IF EXISTS Posts;
+DELETE FROM PostTags;
+DROP TABLE IF EXISTS PostTags;
+INSERT INTO PostTags (post_id, tag_id)
+VALUES (3, 3)
+INSERT INTO PostTags (post_id, tag_id)
+VALUES (4, 4)
+INSERT INTO PostTags (post_id, tag_id)
+VALUES (4, 5)

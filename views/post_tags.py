@@ -5,7 +5,7 @@ from .views_helper import dict_factory
 database = "./db.sqlite3"
 
 
-def get_post_tags():
+def get_all_post_tags():
     with sqlite3.connect(database) as conn:
         conn.row_factory = dict_factory
         db_cursor = conn.cursor()
@@ -16,8 +16,8 @@ def get_post_tags():
                 pt.id,
                 pt.post_id,
                 pt.tag_id,
-                t.label,
-                FROM PostTags pt,
+                t.label
+                FROM PostTags pt
                 JOIN Tags t
                     ON t.id = pt.tag_id
              """
