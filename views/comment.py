@@ -13,8 +13,20 @@ def get_comments():
 
         db_cursor.execute(
             """
-            SELECT *
-            FROM Comments
+            SELECT 
+                c.id,
+                c.post_id,
+                c.author_id,
+                c.content,
+                c.date,
+                u.first_name,
+                u.last_name,
+                u.username,
+                u.email,
+                u.id
+            FROM Comments C
+            JOIN Users u
+                on u.id = c.author_id
         """
         )
 
@@ -23,11 +35,20 @@ def get_comments():
         comments = []
 
         for row in query_results:
+            user = {
+                "id": row["id"],
+                "first_name": row["first_name"],
+                "last_name": row["last_name"],
+                "username": row["username"],
+                "email": row["email"],
+            }
             comment = {
                 "id": row["id"],
                 "post_id": row["post_id"],
                 "author_id": row["author_id"],
                 "content": row["content"],
+                "date": row["date"],
+                "user": user,
             }
             comments.append(comment)
         serialized_comments = json.dumps(comments)
@@ -45,7 +66,9 @@ def get_single_comment(pk):
                 c.id,
                 c.post_id,
                 c.author_id,
-                c.content
+                c.content,
+                c.date
+
             FROM Comments c
             WHERE c.id = ?
         """,
@@ -64,13 +87,14 @@ def add_comment(data):
 
         db_cursor.execute(
             """
-                INSERT INTO Comments (post_id, author_id, content)
-                VALUES (?,?,?)
+                INSERT INTO Comments (post_id, author_id, content, date)
+                VALUES (?,?,?,?)
             """,
             (
                 data["post_id"],
                 data["author_id"],
                 data["content"],
+                data["date"],
             ),
         )
         rows_affected = db_cursor.rowcount
