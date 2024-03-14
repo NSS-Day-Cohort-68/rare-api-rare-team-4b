@@ -21,6 +21,7 @@ from views import (
     add_comment,
     delete_category,
     delete_post,
+    add_tag_to_post,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -217,6 +218,19 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "Failed to create hauler", status.HTTP_500_SERVER_ERROR.value
                     )
+            elif url["requested_resource"] == "posts":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                successfully_added = add_tag_to_post(request_body)
+                if successfully_added:
+                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                return self.response(
+                    "Requested resource not found",
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+
             # login:
             elif url["requested_resource"] == "login":
                 if has_unsupported_params(url) or url["pk"] != 0:
