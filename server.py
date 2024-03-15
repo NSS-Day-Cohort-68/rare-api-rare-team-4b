@@ -20,11 +20,8 @@ from views import (
     get_all_post_tags,
     add_comment,
     delete_category,
-<<<<<<< HEAD
     delete_tag,
-=======
     delete_post,
->>>>>>> 1c209ab755b5fb3ff815b0381f9df916d1d33dd4
 )
 
 from helper import has_unsupported_params, missing_fields
