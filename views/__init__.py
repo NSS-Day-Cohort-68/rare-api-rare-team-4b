@@ -12,6 +12,11 @@ from .category import (
     retrieve_categories,
     delete_category,
 )
+<<<<<<< HEAD
 from .post import get_all_posts, specific_post, create_post
 from .tag import get_tag, get_all_tags
+=======
+from .post import get_all_posts, specific_post
+from .tag import get_tag, get_all_tags, delete_tag
+>>>>>>> main
 from .comment import get_comments, get_single_comment, add_comment
