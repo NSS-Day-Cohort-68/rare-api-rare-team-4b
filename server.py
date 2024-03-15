@@ -20,7 +20,7 @@ from views import (
     get_all_tags,
     add_comment,
     delete_category,
-    delete_tag,
+    delete_post,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -283,27 +283,28 @@ class JSONServer(HandleRequests):
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                 return self.response(
-                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    "Requested resource not found",
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                 )
 
-            elif url["requested_resource"] == "tags":
+            elif url["requested_resource"] == "posts":
                 if pk != 0:
-                    deleted = delete_tag(pk)
+                    deleted = delete_post(pk)
                     if deleted:
                         return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                     return self.response(
-                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                        "Resource not found",
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                     )
-
             else:
-                # invalid request
-                return self.response(
-                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                )
+                return self.response("", status.HTTP_403_FORBIDDEN.value)
+
         else:
             # invalid request
-            return self.response("", status.HTTP_403_FORBIDDEN.value)
+            return self.response(
+                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
 
 
 def main():
