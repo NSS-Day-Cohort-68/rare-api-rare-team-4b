@@ -62,3 +62,19 @@ def delete_tag(pk):
         )
 
     return True if db_cursor.rowcount > 0 else False
+
+
+def update_tag(pk, tag):
+    with sqlite3.connect(database) as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            UPDATE Tags
+            SET label = ?
+            WHERE id = ?
+            """,
+            (tag["label"], pk),
+        )
+
+    return True if db_cursor.rowcount > 0 else False

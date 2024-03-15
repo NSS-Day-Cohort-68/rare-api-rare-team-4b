@@ -22,6 +22,7 @@ from views import (
     delete_category,
     delete_tag,
     update_category,
+    update_tag,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -295,7 +296,25 @@ class JSONServer(HandleRequests):
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
                 else:
                     return self.response(
-                        "Failed to update category",
+                        "Failed to update category.",
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
+
+            if url["requested_resource"] == "tags":
+                # validate request body
+                missing_request_fields = missing_fields(request_body, ["label"])
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                update_success = update_tag(pk, request_body)
+                if update_success:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "Failed to update tag.",
                         status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                     )
 
