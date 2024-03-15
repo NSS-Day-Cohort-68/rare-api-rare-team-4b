@@ -131,13 +131,8 @@ VALUES (2, 1, 'Second Example Post', '2023-04-02 00:00:00', null, 'Lorem ipsum d
 INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved)
 VALUES (3, 1, 'Third Example Post', '2023-04-03 00:00:00', 'https://www.pixelstalk.net/wp-content/uploads/2016/07/Wallpapers-pexels-photo.jpg', 'Lorem ipsum dolor sit amet consectetur adipiscing elit leo, et inceptos eget mus cum rutrum potenti, praesent libero tortor morbi condimentum tempor ullamcorper. Placerat semper facilisi netus nascetur tellus sapien habitasse magna natoque, sodales odio arcu velit hac elementum porttitor mattis magnis, mi gravida viverra quis per mollis nullam luctus. Faucibus massa erat posuere quisque varius ornare lobortis nisi, nunc vivamus penatibus sollicitudin sociosqu pellentesque ligula felis, dapibus conubia purus justo torquent egestas convallis. Imperdiet nibh nostra integer molestie feugiat duis diam accumsan phasellus ante class, auctor ad rhoncus nam bibendum orci donec facilisis urna pulvinar. Eleifend dis fermentum parturient pretium vestibulum augue euismod nec, consequat vulputate habitant eu curae suscipit vitae venenatis, eros risus at sagittis ridiculus congue himenaeos.', 1);
 
-DELETE FROM Posts;
-DROP TABLE IF EXISTS Posts;
 
 
-
-
-
-
-
-
+INSERT INTO PostTags (post_id, tag_id) VALUES (2, 1);
+INSERT INTO PostTags (post_id, tag_id) VALUES (3,3);
+INSERT INTO PostTags (post_id, tag_id) VALUES (3,1);

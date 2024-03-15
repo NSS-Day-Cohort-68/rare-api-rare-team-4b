@@ -18,13 +18,14 @@ from views import (
     get_comments,
     get_single_comment,
     get_tag,
-    get_all_tags,
+    get_all_post_tags,
     add_comment,
     delete_category,
     delete_tag,
     update_category,
     update_tag,
     delete_post,
+    add_tag_to_post,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -113,7 +114,11 @@ class JSONServer(HandleRequests):
                 else:
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
 
-            response_body = get_all_tags()
+            response_body = get_all_post_tags()
+            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+
+        elif url["requested_resource"] == "post-tags":
+            response_body = get_all_post_tags()
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
         else:
@@ -188,6 +193,28 @@ class JSONServer(HandleRequests):
                     # invalid request
                     return self.response(
                         "Your request is invalid JSON.",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+            elif url["requested_resource"] == "post-tags":
+                try:
+                    content_len = int(self.headers.get("content-length", 0))
+                    request_body = self.rfile.read(content_len)
+                    request_body = json.loads(request_body)
+
+                    successfully_added = add_tag_to_post(request_body)
+
+                    if successfully_added:
+                        return self.response(
+                            "{}", status.HTTP_201_SUCCESS_CREATED.value
+                        )
+                    else:
+                        return self.response(
+                            "Failed to create", status.HTTP_500_SERVER_ERROR.value
+                        )
+                except (JSONDecodeError, KeyError):
+                    return self.response(
+                        "Insufficient Input Information",
                         status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                     )
 

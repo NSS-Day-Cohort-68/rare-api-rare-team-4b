@@ -182,3 +182,21 @@ def create_post(user_id, category_id, title, content, image_url=None):
         rows_affected = db_cursor.rowcount
 
     return True if rows_affected > 0 else False
+
+
+def add_tag_to_post(data):
+    with sqlite3.connect(database) as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+                INSERT INTO PostTags (post_id, tag_id)
+                VALUES (?,?)
+            """,
+            (
+                data["post_id"],
+                data["tag_id"],
+            ),
+        )
+        rows_affected = db_cursor.rowcount
+    return True if rows_affected > 0 else False
