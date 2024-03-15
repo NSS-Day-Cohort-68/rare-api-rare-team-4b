@@ -364,8 +364,16 @@ class JSONServer(HandleRequests):
                     return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                 return self.response(
-                    "Requested resource not found",
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
+
+            elif url["requested_resource"] == "tags":
+                deleted = delete_tag(pk)
+                if deleted:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                 )
 
             elif url["requested_resource"] == "posts":
@@ -375,17 +383,16 @@ class JSONServer(HandleRequests):
                         return self.response("{}", status.HTTP_200_SUCCESS.value)
 
                     return self.response(
-                        "Resource not found",
-                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                        "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                     )
             else:
-                return self.response("", status.HTTP_403_FORBIDDEN.value)
+                return self.response(
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                )
 
         else:
             # invalid request
-            return self.response(
-                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-            )
+            return self.response("", status.HTTP_403_FORBIDDEN.value)
 
 
 def main():
