@@ -27,7 +27,7 @@ def get_all_post_tags():
         post_tags = []
         for row in query_results:
             post_tag = {
-                "post_tag_id": row["id"],
+                "id": row["id"],
                 "post_id": row["post_id"],
                 "tag_id": row["tag_id"],
                 "tag": {

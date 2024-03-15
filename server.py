@@ -212,7 +212,7 @@ class JSONServer(HandleRequests):
                         return self.response(
                             "Failed to create", status.HTTP_500_SERVER_ERROR.value
                         )
-                except JSONDecodeError:
+                except (JSONDecodeError, KeyError):
                     return self.response(
                         "Insufficient Input Information",
                         status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
