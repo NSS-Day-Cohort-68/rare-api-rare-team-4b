@@ -150,19 +150,35 @@ def delete_post(pk):
     return True if db_cursor.rowcount > 0 else False
 
 
-def add_tag_to_post(data):
+def create_post(user_id, category_id, title, content, image_url=None):
+    """
+    Creates a new post in the database.
+
+    Returns:
+        bool: True if the post was created successfully, False otherwise.
+    """
+    publication_date = datetime.now()
+    approved = 1  # Assuming 1 for true/approved
+
     with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
         db_cursor = conn.cursor()
 
         db_cursor.execute(
             """
-                INSERT INTO PostTags (post_id, tag_id)
-                VALUES (?,?)
+            INSERT INTO Posts (user_id, category_id, title, content, image_url, publication_date, approved)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                data["post_id"],
-                data["tag_id"],
+                user_id,
+                category_id,
+                title,
+                content,
+                image_url,
+                publication_date,
+                approved,
             ),
         )
         rows_affected = db_cursor.rowcount
+
     return True if rows_affected > 0 else False
