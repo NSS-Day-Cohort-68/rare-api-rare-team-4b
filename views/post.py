@@ -134,6 +134,22 @@ def get_all_posts():
     return json.dumps(posts)
 
 
+def delete_post(pk):
+    with sqlite3.connect(database) as conn:
+        conn.row_factory = dict_factory
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            DELETE FROM Posts
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+    return True if db_cursor.rowcount > 0 else False
+
+
 def create_post(user_id, category_id, title, content, image_url=None):
     """
     Creates a new post in the database.
