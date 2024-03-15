@@ -24,10 +24,20 @@ def get_comments():
                 u.last_name,
                 u.username,
                 u.email,
-                u.id AS user_id
+                u.id AS user_id,
+                p.id AS post_number,
+                p.user_id AS post_author,
+                p.title AS post_title,
+                p.image_url,
+                p.publication_date,
+                p.content AS post_content,
+                p.approved,
+                p.category_id
             FROM Comments C
             JOIN Users u
                 on u.id = c.author_id
+            JOIN Posts p
+                on p.id = c.post_id
         """
         )
 
@@ -36,6 +46,16 @@ def get_comments():
         comments = []
 
         for row in query_results:
+            post = {
+                "id": row["post_number"],
+                "title": row["post_title"],
+                "image_url": row["image_url"],
+                "publication_date": row["publication_date"],
+                "content": row["post_content"],
+                "approved": row["approved"],
+                "user_id": row["post_author"],
+                "category_id": row["category_id"],
+            }
             user = {
                 "id": row["user_id"],
                 "first_name": row["first_name"],
@@ -50,6 +70,7 @@ def get_comments():
                 "content": row["content"],
                 "date": row["date"],
                 "user": user,
+                "post": post,
             }
             comments.append(comment)
         serialized_comments = json.dumps(comments)
