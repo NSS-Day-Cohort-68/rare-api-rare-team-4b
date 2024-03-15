@@ -141,7 +141,7 @@ def create_post(user_id, category_id, title, content, image_url=None):
     Returns:
         bool: True if the post was created successfully, False otherwise.
     """
-    publication_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    publication_date = datetime.now()
     approved = 1  # Assuming 1 for true/approved
 
     with sqlite3.connect(database) as conn:

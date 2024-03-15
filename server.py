@@ -230,9 +230,11 @@ class JSONServer(HandleRequests):
                 content = request_body.get("content")
                 image_url = request_body.get("image_url", None)
 
-                successfully_added = create_post(user_id, category_id, title, content)
+                successfully_added = create_post(
+                    user_id, category_id, title, content, image_url
+                )
                 if successfully_added:
-                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
 
                 else:
                     return self.response(
