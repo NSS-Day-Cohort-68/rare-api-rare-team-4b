@@ -11,6 +11,7 @@ from .category import (
     list_categories,
     retrieve_categories,
     delete_category,
+    update_category,
 )
 from .post import (
     get_all_posts,
@@ -19,6 +20,6 @@ from .post import (
     add_tag_to_post,
     create_post,
 )
-from .tag import get_tag, get_all_tags, delete_tag
+from .tag import get_tag, get_all_tags, delete_tag, update_tag
 from .comment import get_comments, get_single_comment, add_comment
 from .post_tags import get_all_post_tags

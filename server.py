@@ -22,6 +22,8 @@ from views import (
     add_comment,
     delete_category,
     delete_tag,
+    update_category,
+    update_tag,
     delete_post,
     add_tag_to_post,
 )
@@ -216,8 +218,7 @@ class JSONServer(HandleRequests):
                 if successfully_added:
                     return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
                 return self.response(
-                    "Requested resource not found",
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
                 )
 
             elif url["requested_resource"] == "categories":
@@ -309,11 +310,64 @@ class JSONServer(HandleRequests):
 
     def do_PUT(self):
         """handle PUT requests from a client"""
+        url = self.parse_url(self.path)
+        pk = url["pk"]
 
-        # TODO: handle PUT requests
-        return self.response(
-            "Feature is not yet implemented.", status.HTTP_501_NOT_IMPLEMENTED.value
-        )  #!
+        if pk != 0:
+
+            try:
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+            except (JSONDecodeError, KeyError):
+                # invalid request
+                return self.response(
+                    "Your request is invalid JSON.",
+                    status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                )
+
+            if url["requested_resource"] == "categories":
+                # validate request body
+                missing_request_fields = missing_fields(request_body, ["label"])
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                update_success = update_category(pk, request_body)
+                if update_success:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "Failed to update category.",
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
+
+            if url["requested_resource"] == "tags":
+                # validate request body
+                missing_request_fields = missing_fields(request_body, ["label"])
+                if missing_request_fields:
+                    return self.response(
+                        f"Missing required fields: {', '.join(missing_request_fields)}",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
+                    )
+
+                update_success = update_tag(pk, request_body)
+                if update_success:
+                    return self.response("{}", status.HTTP_200_SUCCESS.value)
+                else:
+                    return self.response(
+                        "Failed to update tag.",
+                        status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                    )
+
+            return self.response(
+                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
+        else:
+            return self.response("", status.HTTP_403_FORBIDDEN.value)
 
     def do_DELETE(self):
         """handle DELETE requests from a client"""
