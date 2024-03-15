@@ -13,6 +13,7 @@ from views import (
     specific_post,
     get_all_posts,
     create_tag,
+    create_post,
     get_user_by_email,
     get_comments,
     get_single_comment,
@@ -186,6 +187,7 @@ class JSONServer(HandleRequests):
                         "Your request is invalid JSON.",
                         status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                     )
+
             elif url["requested_resource"] == "comments":
                 content_len = int(self.headers.get("content-length", 0))
                 request_body = self.rfile.read(content_len)
@@ -215,6 +217,30 @@ class JSONServer(HandleRequests):
                     return self.response(
                         "Failed to create category", status.HTTP_500_SERVER_ERROR.value
                     )
+
+            elif url["requested_resource"] == "posts":
+                content_len = int(self.headers.get("content-length", 0))
+                request_body = self.rfile.read(content_len)
+                request_body = json.loads(request_body)
+
+                # extract the request body
+                user_id = request_body.get("user_id")
+                category_id = request_body.get("category_id")
+                title = request_body.get("title")
+                content = request_body.get("content")
+                image_url = request_body.get("image_url", None)
+
+                successfully_added = create_post(
+                    user_id, category_id, title, content, image_url
+                )
+                if successfully_added:
+                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
+
+                else:
+                    return self.response(
+                        "Failed to create post.", status.HTTP_500_SERVER_ERROR.value
+                    )
+
             # login:
             elif url["requested_resource"] == "login":
                 if has_unsupported_params(url) or url["pk"] != 0:
