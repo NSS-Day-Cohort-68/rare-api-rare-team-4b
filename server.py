@@ -22,6 +22,7 @@ from views import (
     delete_category,
     delete_tag,
     delete_post,
+    add_tag_to_post,
 )
 
 from helper import has_unsupported_params, missing_fields
@@ -197,9 +198,8 @@ class JSONServer(HandleRequests):
                 request_body = self.rfile.read(content_len)
                 request_body = json.loads(request_body)
 
-                # create the new tag
-                new_tag = create_tag(request_body)
-                if new_tag:
+                successfully_added = add_tag_to_post(request_body)
+                if successfully_added:
                     return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
                 else:
                     return self.response(
