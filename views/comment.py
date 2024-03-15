@@ -26,7 +26,8 @@ def get_comments():
                 u.email,
                 u.id AS user_id,
                 p.id AS post_number,
-                p.title,
+                p.user_id AS post_author,
+                p.title AS post_title,
                 p.image_url,
                 p.publication_date,
                 p.content AS post_content,
@@ -47,12 +48,12 @@ def get_comments():
         for row in query_results:
             post = {
                 "id": row["post_number"],
-                "title": ["title"],
+                "title": row["post_title"],
                 "image_url": row["image_url"],
                 "publication_date": row["publication_date"],
-                "content": row["content"],
+                "content": row["post_content"],
                 "approved": row["approved"],
-                "user_id": row["user_id"],
+                "user_id": row["post_author"],
                 "category_id": row["category_id"],
             }
             user = {
