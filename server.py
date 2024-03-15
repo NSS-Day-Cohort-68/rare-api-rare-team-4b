@@ -197,16 +197,25 @@ class JSONServer(HandleRequests):
                     )
 
             elif url["requested_resource"] == "post-tags":
-                content_len = int(self.headers.get("content-length", 0))
-                request_body = self.rfile.read(content_len)
-                request_body = json.loads(request_body)
+                try:
+                    content_len = int(self.headers.get("content-length", 0))
+                    request_body = self.rfile.read(content_len)
+                    request_body = json.loads(request_body)
 
-                successfully_added = add_tag_to_post(request_body)
-                if successfully_added:
-                    return self.response("{}", status.HTTP_201_SUCCESS_CREATED.value)
-                else:
+                    successfully_added = add_tag_to_post(request_body)
+
+                    if successfully_added:
+                        return self.response(
+                            "{}", status.HTTP_201_SUCCESS_CREATED.value
+                        )
+                    else:
+                        return self.response(
+                            "Failed to create", status.HTTP_500_SERVER_ERROR.value
+                        )
+                except JSONDecodeError:
                     return self.response(
-                        "Failed to create tag.", status.HTTP_500_SERVER_ERROR.value
+                        "Insufficient Input Information",
+                        status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value,
                     )
 
             elif url["requested_resource"] == "comments":
